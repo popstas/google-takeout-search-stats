@@ -21,15 +21,20 @@ def extract_search_query(title):
 def main():
     print("Starting Google Takeout Search Stats script...")
     
-    # Set up file paths
+    # Set up file paths (Russian and English Takeout layouts)
     takeout_dir = pathlib.Path('data') / 'Takeout'
-    activity_file = takeout_dir / 'Мои действия' / 'Поиск' / 'МоиДействия.json'
+    activity_file_candidates = [
+        takeout_dir / 'Мои действия' / 'Поиск' / 'МоиДействия.json',
+        takeout_dir / 'My Activity' / 'Search' / 'MyActivity.json',
+    ]
     
-    print(f"Looking for data file at: {activity_file}")
-    print(f"File exists: {activity_file.exists()}")
+    activity_file = next((path for path in activity_file_candidates if path.exists()), None)
+    for path in activity_file_candidates:
+        print(f"Looking for data file at: {path}")
+        print(f"File exists: {path.exists()}")
     
-    if not activity_file.exists():
-        print("Error: Data file not found. Please ensure the file exists at the specified path.")
+    if activity_file is None:
+        print("Error: Data file not found. Please ensure the file exists at one of the paths above.")
         return
     
     try:
